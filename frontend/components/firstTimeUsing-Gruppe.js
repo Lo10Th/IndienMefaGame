@@ -1,37 +1,57 @@
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
 import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from "@react-navigation/native";
 
 export default function FirstTimeUsingGruppe() {
   const [groupNames, setGroupNames] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigation = useNavigation();
+
 
   useEffect(() => {
-    fetch('http://localhost:5000/listGroups')
+    fetch('http://192.168.178.91:5000/listGroups')
       .then(response => response.json())
       .then(data => setGroupNames(data));
+      setIsLoading(false);
   }, []);
 
-  const selectGroup = (group) => {
+  const selectGroup = async (group) => {
     setSelectedGroup(group);
-    // Navigate to the next screen or perform any other action here
+    await AsyncStorage.setItem('db_id', group.id);
+    await AsyncStorage.setItem('name', group.name);
+    await AsyncStorage.getItem('db_id').then((value) => console.log(value));
+  };
+
+  const handleButtonPress = () => {
+    console.log('Weiter');
+    navigation.navigate('FirstTimeUsingStack3Gruppe');
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.HeaderText}>Wähle deine Gruppe</Text>
-      <FlatList
-        data={groupNames}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[styles.groupName, item === selectedGroup && styles.selectedGroup]}
-            onPress={() => selectGroup(item)}
-          >
-            <Text>{item}</Text>
-          </TouchableOpacity>
+      <View style={styles.listContainer}>
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#0000ff" /> // Loading spinner
+        ) : (
+          <FlatList
+            style={styles.listStyle}
+            data={groupNames}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[styles.groupName, item === selectedGroup && styles.selectedGroup]}
+                onPress={() => selectGroup(item)}
+              >
+                <Text style={styles.groupNameText}>{item.name}</Text>
+              </TouchableOpacity>
+            )}
+          />
         )}
-      />
-      <TouchableOpacity style={styles.button} onPress={() => console.log('Weiter')}>
+      </View>
+      <TouchableOpacity style={styles.button} onPress={handleButtonPress} disabled={selectedGroup === null}>
         <Text style={styles.buttonText}>Weiter</Text>
       </TouchableOpacity>
     </View>
@@ -57,9 +77,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 10,
   },
+  groupNameText: {
+    color: '#F7F7F7',
+    fontSize: 20,
+    fontFamily: 'sans-serif',
+    textAlign: 'center',
+  },
   selectedGroup: {
     borderColor: '#F7F7F7',
     borderWidth: 2,
+    borderRadius: 5,
   },
   button: {
     backgroundColor: '#F7F7F7',
@@ -71,5 +98,16 @@ const styles = StyleSheet.create({
     color: '#080B0F',
     fontSize: 20,
     textAlign: 'center',
+  },
+  listStyle: {
+    padding: 10,
+    marginTop: '20%',
+    borderColor: '#F7F7F7',
+    borderWidth: 3,
+    borderRadius: 5,
+  },
+  listContainer: {
+    padding: 20,
+    flex: 1,
   },
 });
