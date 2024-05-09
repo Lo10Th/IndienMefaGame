@@ -26,36 +26,42 @@ def init():
 
 @app.route('/listGroups', methods=['GET','POST'])
 def listGroups():
-    # Get all Groups in one list with there names
+    # Get all Groups in one list with their names and ids
     groups = client.collection("groups").get_full_list()
-    group_names = [record.name for record in groups]
-    return jsonify(group_names)
+    group_data = [{"id": record.id, "name": record.name} for record in groups]
+    return jsonify(group_data)
 
 @app.route('/listDealers', methods=['GET','POST'])
 def listDealers():
-    # Get all Dealers in one list with there names
-
+    # Get all Dealers in one list with their names and ids
     dealers = client.collection("dealers").get_full_list()
-    dealer_names = [record.name for record in dealers]
-    return jsonify(dealer_names)
+    dealer_data = [{"id": record.id, "name": record.name} for record in dealers]
+    return jsonify(dealer_data)
 
 @app.route('/checkForPwd/groups', methods=['GET','POST'])
 def checkForPwdGroups():
     # The id of the group sql will be passed in the request with the key 'id'
-    # Do it like this in the request http://localhost:5000/checkForPwd/groups?id=1
+    # And the password that the group had entered
+    # Do it like this in the request http://localhost:5000/checkForPwd/groups?id=1&password=1234
 
     id = request.args.get('id')
     pwd = client.collection("groups").get_one(id).password
-    return pwd
+    if pwd == int(request.args.get('password')):
+        return 'true'
+    else:
+        return 'false'
 
 @app.route('/checkForPwd/dealers', methods=['GET','POST'])
 def checkForPwdDealers():
-    # The same just for dealers
-    # Do it like this in the request http://localhost:5000/checkForPwd/dealers?id=1
+    # The id of the dealer sql will be passed in the request with the key 'id'
+    # And the password that the dealer had entered
+    # Do it like this in the request http://localhost:5000/checkForPwd/dealers?id=1&password=1234
 
     id = request.args.get('id')
     pwd = client.collection("dealers").get_one(id).password
-    return pwd
+    if pwd == int(request.args.get('password')):
+        return 'true'
+    return 'false'
 
 @app.route('/openTrade', methods=['GET','POST'])
 def openTrade():
