@@ -6,15 +6,22 @@ import { useNavigation } from "@react-navigation/native";
 export default function FirstTimeUsingGruppe() {
   const [groupNames, setGroupNames] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
-
   useEffect(() => {
-    fetch('http://192.168.178.91:5000/listGroups')
-      .then(response => response.json())
-      .then(data => setGroupNames(data));
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch('http://192.168.178.91:5000/listGroups');
+        const data = await response.json();
+        setGroupNames(data);
+      } catch (error) {
+        console.error(error);
+      }
       setIsLoading(false);
+    };
+    fetchData();
   }, []);
 
   const selectGroup = async (group) => {
@@ -33,9 +40,7 @@ export default function FirstTimeUsingGruppe() {
     <View style={styles.container}>
       <Text style={styles.HeaderText}>Wähle deine Gruppe</Text>
       <View style={styles.listContainer}>
-        {isLoading ? (
-          <ActivityIndicator size="large" color="#0000ff" /> // Loading spinner
-        ) : (
+      {isLoading && <ActivityIndicator size="large" color="#fff" />}
           <FlatList
             style={styles.listStyle}
             data={groupNames}
@@ -49,7 +54,6 @@ export default function FirstTimeUsingGruppe() {
               </TouchableOpacity>
             )}
           />
-        )}
       </View>
       <TouchableOpacity style={styles.button} onPress={handleButtonPress} disabled={selectedGroup === null}>
         <Text style={styles.buttonText}>Weiter</Text>

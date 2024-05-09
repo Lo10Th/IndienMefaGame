@@ -43,7 +43,7 @@ const animateCell = ({hasValue, index, isFocused}) => {
   ]).start();
 };
 
-const PwdCheckGroupInput = () => {
+const PwdCheckDealerInput = () => {
   const [value, setValue] = useState('');
   const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -100,8 +100,8 @@ const PwdCheckGroupInput = () => {
       setLoading(true);
       let id = await AsyncStorage.getItem('db_id');
       console.log(id);
-      console.log('http://192.168.178.91:5000/checkForPwd/groups?id=' + id + '&password=' + value)
-      fetch('http://192.168.178.91:5000/checkForPwd/groups?id=' + id + '&password=' + value)
+      console.log('http://192.168.178.91:5000/checkForPwd/dealers?id=' + id + '&password=' + value)
+      fetch('http://192.168.178.91:5000/checkForPwd/dealers?id=' + id + '&password=' + value)
         .then(response => response.json())
         .then(data => {
           console.log(data);
@@ -138,4 +138,4 @@ const PwdCheckGroupInput = () => {
   );
 };
 
-export default PwdCheckGroupInput;
+export default PwdCheckDealerInput;

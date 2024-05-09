@@ -1,13 +1,13 @@
 import { View, Text, StyleSheet } from 'react-native';
-import PwdCheckGroupInput from './pwd-input/pwdInput-group';
+import PwdCheckDealerInput from './pwd-input/pwdInput-dealer';
 
 
-export default function PwdCheckGroup() {
+export default function PwdCheckDealer() {
   return (
     <View style={styles.container}>
       <Text style={styles.HeaderText}>Passwort eingeben</Text>
       <View style={styles.pwdContainer}>
-        <PwdCheckGroupInput />
+        <PwdCheckDealerInput />
       </View>
     </View>
   );

@@ -15,7 +15,7 @@ export default function FirstTimeUsing1() {
       if (selectedBox === 'Gruppe') {
         navigation.navigate('FirstTimeUsingStack2Gruppe');
       } else if (selectedBox === 'Dealer') {
-        navigation.navigate('FirstTimeUsingStack2-Dealer');
+        navigation.navigate('FirstTimeUsingStack2Dealer');
       }
     }
   

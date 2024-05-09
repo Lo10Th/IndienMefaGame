@@ -37,6 +37,7 @@ def listDealers():
     dealers = client.collection("dealers").get_full_list()
     dealer_data = [{"id": record.id, "name": record.name} for record in dealers]
     return jsonify(dealer_data)
+
 @app.route('/checkForPwd/groups', methods=['GET','POST'])
 def checkForPwdGroups():
     # The id of the group sql will be passed in the request with the key 'id'
@@ -45,8 +46,6 @@ def checkForPwdGroups():
 
     id = request.args.get('id')
     pwd = client.collection("groups").get_one(id).password
-    print(request.args.get('password'))
-    print(pwd)
     if pwd == int(request.args.get('password')):
         return 'true'
     else:
@@ -60,9 +59,9 @@ def checkForPwdDealers():
 
     id = request.args.get('id')
     pwd = client.collection("dealers").get_one(id).password
-    if pwd == request.args.get('password'):
-        return True
-    return False
+    if pwd == int(request.args.get('password')):
+        return 'true'
+    return 'false'
 
 @app.route('/openTrade', methods=['GET','POST'])
 def openTrade():
