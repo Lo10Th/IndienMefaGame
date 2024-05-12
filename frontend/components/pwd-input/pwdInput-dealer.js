@@ -2,6 +2,8 @@ import { Animated, Text, View, TouchableOpacity, ActivityIndicator } from 'react
 import React, {useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
+import { NavigationContainer } from '@react-navigation/native';
+import TabNavigator from '../../navigation/TabNavigator';
 
 import {
   CodeField,
@@ -81,7 +83,6 @@ const PwdCheckDealerInput = () => {
 
     setTimeout(() => {
       animateCell({hasValue, index, isFocused});
-      console.log(value);
     }, 0);
 
     
@@ -107,7 +108,9 @@ const PwdCheckDealerInput = () => {
           console.log(data);
           if (data === true) {
             setLoading(false);
-            console.log('Correct password');
+            console.log('verified');
+            AsyncStorage.setItem('verified', 'true');
+            navigation.navigate('TabNavigator');
           } else {
             setLoading(false);
             alert('Falsches Passwort!');

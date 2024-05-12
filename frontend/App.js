@@ -4,16 +4,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import FirstTimeUsingStackScreen from './navigation/firstTimeUsingStack';
 
 export default function App() {
-  if (AsyncStorage.getItem('token') == null) {
+
+  const askForUsingeBefore = async () => {
+    ask = await AsyncStorage.getItem('verified');
+    console.log(ask);
+    if (ask == null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  if (askForUsingeBefore() === false) {
     return (
       <NavigationContainer>
-        <TabNavigator />
+        <FirstTimeUsingStackScreen />
       </NavigationContainer>
     );}
   else {
     return (
       <NavigationContainer>
-        <FirstTimeUsingStackScreen />
+        <TabNavigator />
       </NavigationContainer>
     );
   }

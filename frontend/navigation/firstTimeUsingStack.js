@@ -4,6 +4,7 @@ import FirstTimeUsingGruppe from '../components/firstTimeUsing-Gruppe';
 import PwdCheckGroup from '../components/pwdCheckGroup';
 import FirstTimeUsingDealer from '../components/firstTimeUsing-Dealer';
 import PwdCheckDealer from '../components/pwdCheckDealer';
+import NavigationBridge from '../components/NavigationBridge';
 
 const FirstTimeUsingStack = createStackNavigator();
 
@@ -15,6 +16,7 @@ export default function FirstTimeUsingStackScreen() {
       <FirstTimeUsingStack.Screen name="FirstTimeUsingStack3Gruppe" component={PwdCheckGroup} />
       <FirstTimeUsingStack.Screen name="FirstTimeUsingStack2Dealer" component={FirstTimeUsingDealer} />
       <FirstTimeUsingStack.Screen name="FirstTimeUsingStack3Dealer" component={PwdCheckDealer} />
+      <FirstTimeUsingStack.Screen name="TabNavigator" component={NavigationBridge} />
     </FirstTimeUsingStack.Navigator>
   );
 }
