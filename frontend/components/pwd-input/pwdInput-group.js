@@ -107,7 +107,9 @@ const PwdCheckGroupInput = () => {
           console.log(data);
           if (data === true) {
             setLoading(false);
-            console.log('Correct password');
+            console.log('Verified');
+            AsyncStorage.setItem('verified', 'true');
+            navigation.navigate('TabNavigator');
           } else {
             setLoading(false);
             alert('Falsches Passwort!');

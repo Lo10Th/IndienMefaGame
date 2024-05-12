@@ -4,6 +4,11 @@ import React, { useState } from 'react';
 
 
 export default function HomeScreen() {
+  const getName = async () => {
+    const name = await AsyncStorage.getItem('name');
+    return name;
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.HeaderText}>Willkommen, Gruppe Karl</Text>
