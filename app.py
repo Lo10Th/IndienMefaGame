@@ -85,6 +85,29 @@ def openTrade():
 
     return "Trade opened"
 
+@app.route('/listDealersClosedTrades', methods=['GET','POST'])
+def listDealersTrades():
+    # Get all the trades that the dealer has opened
+    # We take the dealer id as an argument
+    # Do it like this in the request: http://localhost:5000/listDealersClosedTrades?id=1
+
+    dealer_id = request.args.get('id')
+    trades = client.collection("closedTrades").get_full_list()
+    trades_data = [{"id": record.id, "created": record.created, "dealer": record.dealer, "materialSum": record.materialsum, "blingSum": record.blingsum, "transactionType": record.transactiontype, "material": record.material} for record in trades if record.dealer == dealer_id ]
+
+    return jsonify(trades_data)
+
+@app.route('/listDealerOpenTrades', methods=['GET','POST'])
+def listDealerOpenTrades():
+    # Get all the trades that the dealer has opened
+    # We take the dealer id as an argument
+    # Do it like this in the request: http://localhost:5000/listDealerOpenTrades?id=1
+
+    dealer_id = request.args.get('id')
+    trades = client.collection("openTrades").get_full_list()
+    trades_data = [{"id": record.id, "created": record.created, "dealer": record.dealer, "materialSum": record.materialsum, "blingSum": record.blingsum, "transactionType": record.transactiontype, "material": record.material} for record in trades if record.dealer == dealer_id ]
+
+    return jsonify(trades_data)
 
 @app.route('/getPortfolio', methods=['GET','POST'])
 def getPortfolio():
@@ -123,6 +146,34 @@ def getPortfolio():
     
     return "Error"
 
+@app.route('/getPortfolioAll', methods=['GET','POST'])
+def getPortfolioAll():
+    # Get the portfolio of a group or a dealer
+    # We take the id of the group or dealer as an argument
+    # And the type of the portfolio, if its a group or a dealer
+    # Do it like this in the request: http://localhost:5000/getPortfolioAll?id=1&type=group
+
+    id = request.args.get('id')
+    type = request.args.get('type')
+
+    if type == "dealer":
+        getportfolio = client.collection("dealers").get_one(id).portfolio
+        getgold = client.collection("portfolio").get_one(getportfolio).gold
+        getwood = client.collection("portfolio").get_one(getportfolio).wood
+        getbling = client.collection("portfolio").get_one(getportfolio).bling
+        return jsonify({"gold": getgold, "wood": getwood, "bling": getbling})
+    if type == "group":
+        getportfolio = client.collection("groups").get_one(id).portfolio
+        getgold = client.collection("portfolio").get_one(getportfolio).gold
+        getwood = client.collection("portfolio").get_one(getportfolio).wood
+        getbling = client.collection("portfolio").get_one(getportfolio).bling
+        return jsonify({"gold": getgold, "wood": getwood, "bling": getbling})
+    
+    return "Error"
+
+
+
+    
 @app.route('/updatePortfolio', methods=['GET','POST'])
 def updatePortfolio():
     # Update the portfolio of a group or a dealer

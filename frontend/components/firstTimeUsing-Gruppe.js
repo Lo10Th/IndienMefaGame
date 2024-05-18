@@ -28,6 +28,7 @@ export default function FirstTimeUsingGruppe() {
     setSelectedGroup(group);
     await AsyncStorage.setItem('db_id', group.id);
     await AsyncStorage.setItem('name', group.name);
+    await AsyncStorage.setItem('type', 'group')
     await AsyncStorage.getItem('db_id').then((value) => console.log(value));
   };
 

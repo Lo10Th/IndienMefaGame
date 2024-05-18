@@ -28,6 +28,7 @@ export default function FirstTimeUsingDealer() {
     setSelectedDealer(dealer);
     await AsyncStorage.setItem('db_id', dealer.id);
     await AsyncStorage.setItem('name', dealer.name);
+    await AsyncStorage.setItem('type', 'dealer')
     await AsyncStorage.getItem('db_id').then((value) => console.log(value));
   };
 
