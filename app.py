@@ -24,6 +24,44 @@ def init():
     #TODO: Add init html page to create groups and dealers and the money of those with there passwords
     return render_template('init.html')
 
+@app.route('/getDealerPrices', methods=['GET','POST'])
+def getDealerPrices():
+    # Get the dealer prices of the materials for each dealer
+    # We take the dealer id as an argument and will create a json with the prices of the materials for every dealer exept the one with the id that we passed
+    # Do it like this in the request: http://localhost:5000/getDealerPrices?id=1
+
+    id = request.args.get('id')
+
+    dealers = client.collection("dealers").get_full_list()
+    dealer_data = {}
+
+    for dealer in dealers:
+        if dealer.id != id:
+            prices_id = dealer.prices
+            prices = client.collection("prices").get_one(prices_id)
+            if hasattr(prices, 'gold') and hasattr(prices, 'wood'):
+                dealer_data[dealer.name] = {"gold": prices.gold, "wood": prices.wood}
+            else:
+                print(f"Prices record {prices_id} does not have 'gold' or 'wood' attributes")
+
+    return jsonify(dealer_data)
+
+@app.route('/getOwnPrices', methods=['GET','POST'])
+def getOwnPrices():
+    # Get the dealer prices of the materials for the dealer with the id that we pass
+    # We take the dealer id as an argument and will create a json with the prices of the materials for the dealer with the id that we passed
+    # Do it like this in the request: http://localhost:5000/getOwnPrices?id=1
+
+    id = request.args.get('id')
+
+    dealer = client.collection("dealers").get_one(id)
+    prices_id = dealer.prices
+    prices = client.collection("prices").get_one(prices_id)
+
+    return jsonify({"gold": prices.gold, "wood": prices.wood})
+
+
+
 @app.route('/listGroups', methods=['GET','POST'])
 def listGroups():
     # Get all Groups in one list with their names and ids

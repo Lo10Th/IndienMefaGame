@@ -4,7 +4,9 @@ import SettingsStackScreen from './SettingsStack';
 import { Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import Trades from '../screens/Trades';
+import DealerTradesStackScreen from './DealerTradesStack';
+import DealerPrizesStackScreen from './dealerPrizesStack';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -49,12 +51,27 @@ export default function TabNavigator() {
     {type === 'dealer' && (
       <Tab.Screen 
         name="ThirdTab"
-        component={Trades} 
+        component={DealerTradesStackScreen} 
         options={{
           tabBarIcon: ({ focused }) => (
             <Image
               source={focused ? require('../assets/icons/transferFocus.png') : require('../assets/icons/transferUnfocus.png')}
               style={{ width: 40, height: 40, tintColor: focused ? '#F7F7F7' : '#A9A9A9' }}
+            />
+          ),
+        }}
+      />
+    )}
+
+    {type === 'dealer' && (
+      <Tab.Screen 
+        name="Prices"
+        component={DealerPrizesStackScreen} 
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={focused ? require('../assets/icons/preisFocus.png') : require('../assets/icons/preisUnfocus.png')}
+              style={{ width: 30, height: 30, tintColor: focused ? '#F7F7F7' : '#A9A9A9' }}
             />
           ),
         }}

@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { DataTable } from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function Trades() {
@@ -55,6 +56,8 @@ export default function Trades() {
     const [closedTrades, setClosedTrades] = useState([]);
     const [openTrades, setOpenTrades] = useState([]);
 
+    const Navigator = useNavigation();
+
 
     getTrades = async () => {
         const id = await AsyncStorage.getItem('db_id');
@@ -82,6 +85,11 @@ export default function Trades() {
 
         return () => clearInterval(interval);
     }, []);
+
+
+    function createTrade() {
+        Navigator.navigate('DealerCreateTrade');
+    }
 
 
     return (
@@ -123,8 +131,8 @@ export default function Trades() {
 
             <View style={styles.Buttoncontainer}>
                 <View style={styles.createButtonContainer}>
-                    <TouchableOpacity style={styles.createButton}>
-                        <Text style={styles.createButtonText}>Create Trade</Text>
+                    <TouchableOpacity style={styles.createButton} onPress={createTrade} >
+                        <Text style={styles.createButtonText}>Trade öffnen</Text>
                     </TouchableOpacity>
                 </View>
             </View>
