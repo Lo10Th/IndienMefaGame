@@ -60,6 +60,21 @@ def getOwnPrices():
 
     return jsonify({"gold": prices.gold, "wood": prices.wood})
 
+@app.route('/updatePrices', methods=['GET','POST'])
+def updatePrices():
+    # Update the prices of the materials for the dealer with the id that we pass
+    # We take the dealer id as an argument and the new prices for the materials
+    # Do it like this in the request: http://localhost:5000/updatePrices?id=1&gold=100&wood=100
+
+    id = request.args.get('id')
+    gold = request.args.get('gold')
+    wood = request.args.get('wood')
+
+    dealer = client.collection("dealers").get_one(id)
+    prices_id = dealer.prices
+    client.collection("prices").update(prices_id, {"gold": gold, "wood": wood})
+
+    return "Prices updated"
 
 
 @app.route('/listGroups', methods=['GET','POST'])

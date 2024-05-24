@@ -1,11 +1,13 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { DataTable } from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 export default function PricesHome() {
     const [prices, setPrices] = useState([]);
     const [selfPrices, setSelfPrices] = useState([]);
+    navigator = useNavigation();
 
     const getPrices = async () => {
         id = await AsyncStorage.getItem('db_id');
@@ -40,6 +42,10 @@ export default function PricesHome() {
         return () => clearInterval(interval);
     }, []);
 
+    const redirect = () => {
+        navigator.navigate('ChangePrices');
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.scrollContainer}>
@@ -61,6 +67,9 @@ export default function PricesHome() {
                 </DataTable>
             </View>
             <Text style={styles.headerText}>Deine Preise</Text>
+            <TouchableOpacity style={styles.reload} onPress={getPrices}>
+                <Image source={require('../assets/icons/reload.png')} style={{ width: 40, height: 40 }} />
+            </TouchableOpacity>
             <View style={styles.yourPrice}>
                 <View style={styles.gold}>
                     <Text style={styles.boxHeader}>Gold Preis</Text>
@@ -73,12 +82,10 @@ export default function PricesHome() {
                 
             </View>
             <View style={styles.yourPriceContainer}>
-                <TouchableOpacity style={styles.changePrice}>
+                <TouchableOpacity style={styles.changePrice} onPress={redirect}>
                     <Text style={styles.ButtonText}>Preise ändern</Text>
                 </TouchableOpacity>
             </View>
-                
-
         </View>
     );
 }
@@ -144,5 +151,8 @@ const styles = StyleSheet.create({
         color: '#F7F7F7',
         fontSize: 20,
         alignSelf: 'center',
+    },
+    reload: {
+        marginLeft: 20,
     },
 });
