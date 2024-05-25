@@ -1,8 +1,7 @@
-import { Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { DataTable } from 'react-native-paper';
-import QRCode from 'react-native-qrcode-svg';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -65,6 +64,7 @@ export default function Trades() {
         fetch('http://192.168.178.91:5000/listDealersClosedTrades?id=' + id)
             .then((response) => response.json())
             .then((data) => {
+                console.log(data);
                 setClosedTrades(data);
             });
         fetch('http://192.168.178.91:5000/listDealerOpenTrades?id=' + id)
@@ -91,6 +91,10 @@ export default function Trades() {
         Navigator.navigate('DealerCreateTrade');
     }
 
+    function openQrCode(id) {
+        Navigator.navigate('QrCode', { id: id });
+    }
+
 
     return (
         <View style={styles.container}>
@@ -99,6 +103,8 @@ export default function Trades() {
                 <DataTable.Header>
                     <DataTable.Title><Text style={styles.DataTableText}>Material</Text></DataTable.Title>
                     <DataTable.Title><Text style={styles.DataTableText}>Typ</Text></DataTable.Title>
+                    <DataTable.Title numeric><Text style={styles.DataTableText}>Bling</Text></DataTable.Title>
+                    <DataTable.Title numeric><Text style={styles.DataTableText}>Material</Text></DataTable.Title>
                     <DataTable.Title numeric><Text style={styles.DataTableText}>Uhrzeit</Text></DataTable.Title>
                 </DataTable.Header>
 
@@ -106,6 +112,8 @@ export default function Trades() {
                     <DataTable.Row key={index}>
                         <DataTable.Cell><Text style={styles.DataTableText}>{String(trade.material)}</Text></DataTable.Cell>
                         <DataTable.Cell><Text style={styles.DataTableText}>{String(trade.transactionType)}</Text></DataTable.Cell>
+                        <DataTable.Cell numeric><Text style={styles.DataTableText}>{String(trade.blingSum)}</Text></DataTable.Cell>
+                        <DataTable.Cell numeric><Text style={styles.DataTableText}>{String(trade.materialSum)}</Text></DataTable.Cell>
                         <DataTable.Cell numeric><Text style={styles.DataTableText}>{String(trade.created.split(' ')[4])}</Text></DataTable.Cell>
 
 
@@ -124,7 +132,7 @@ export default function Trades() {
                     <DataTable.Row key={index}>
                         <DataTable.Cell><Text style={styles.DataTableText}>{String(trade.material)}</Text></DataTable.Cell>
                         <DataTable.Cell><Text style={styles.DataTableText}>{String(trade.transactionType)}</Text></DataTable.Cell>
-                        <DataTable.Cell numeric><Text style={styles.DataTableText}>{String(trade.created.split(' ')[4])}</Text></DataTable.Cell>
+                        <DataTable.Cell><TouchableOpacity onPress={() => openQrCode(trade.id)}><Text>QrCode</Text></TouchableOpacity></DataTable.Cell>
                     </DataTable.Row>
                 ))}
             </DataTable>
