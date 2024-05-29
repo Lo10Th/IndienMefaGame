@@ -11,7 +11,7 @@ export default function DealerTradesStackScreen() {
         <DealerTradesStack.Navigator screenOptions={{ headerShown: false }}>
             <DealerTradesStack.Screen name="DealerTrades" component={Trades} />
             <DealerTradesStack.Screen name="DealerCreateTrade" component={DealerCreateTrade} />
-            <DealerTradesStack.Screen name="QrCode" component={QrCode} />
+            <DealerTradesStack.Screen name="QrCode" component={QrCode} initialParams={{}} />
         </DealerTradesStack.Navigator>
     );
 }

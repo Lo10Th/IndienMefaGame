@@ -1,6 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeStackScreen from './HomeStack';
-import SettingsStackScreen from './SettingsStack';
 import { Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
@@ -77,9 +76,6 @@ export default function TabNavigator() {
         }}
       />
     )}
-
-    <Tab.Screen name="Einstellungen" component={SettingsStackScreen} />
-
     </Tab.Navigator>
   );
 }

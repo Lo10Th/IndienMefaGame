@@ -130,9 +130,9 @@ def openTrade():
 
     client.collection("openTrades").create({
         "dealer": dealer_id,
-        "materialSum": materialSum,
-        "blingSum": blingSum,
-        "transactionType": transactionType,
+        "materialsum": materialSum,
+        "blingsum": blingSum,
+        "transactiontype": transactionType,
         "material": material
     })
 
