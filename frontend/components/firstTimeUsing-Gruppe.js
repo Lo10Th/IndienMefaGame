@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator }
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
+import backendUrl from '../env';
 
 export default function FirstTimeUsingGruppe() {
   const [groupNames, setGroupNames] = useState([]);
@@ -13,7 +14,7 @@ export default function FirstTimeUsingGruppe() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('http://192.168.178.91:5000/listGroups');
+        const response = await fetch(backendUrl + '/listGroups');
         const data = await response.json();
         setGroupNames(data);
       } catch (error) {

@@ -1,0 +1,1 @@
+export default backendUrl = 'http://192.168.178.91:5000';

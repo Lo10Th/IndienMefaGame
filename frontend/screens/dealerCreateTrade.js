@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import SelectDropdown from 'react-native-select-dropdown'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import BackendUrl from '../env';
 
 export default function DealerCreateTrade() {
     const styles = StyleSheet.create({
@@ -117,7 +118,7 @@ export default function DealerCreateTrade() {
             }
         }
         const id = await AsyncStorage.getItem('db_id');
-        fetch('http://192.168.178.91:5000/openTrade?dealer_id=' + id + '&materialSum=' + materialSum + '&blingSum=' + trade.blingSum + '&transactionType=' + trade.type + '&material=' + trade.material)
+        fetch(BackendUrl + '/openTrade?dealer_id=' + id + '&materialSum=' + materialSum + '&blingSum=' + trade.blingSum + '&transactionType=' + trade.type + '&material=' + trade.material)
             .then((response) => response.text())
             .then((data) => {
             if (data === "Trade opened") {
@@ -132,7 +133,7 @@ export default function DealerCreateTrade() {
 
     const getSelfPrices = async () => {
         id = await AsyncStorage.getItem('db_id');
-        fetch('http://192.168.178.91:5000/getOwnPrices?id=' + id)
+        fetch(BackendUrl + '/getOwnPrices?id=' + id)
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);

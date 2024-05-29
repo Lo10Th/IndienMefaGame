@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-nativ
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import BackendUrl from '../env';
 
 export default function ChangePrices() {
     const [gold, setGold] = useState('');
@@ -14,10 +15,13 @@ export default function ChangePrices() {
             alert('Bitte fülle alle Felder aus!');
             return;
         }
-        fetch('http://192.168.178.91:5000/updatePrices?id=' + id + '&gold=' + gold + '&wood=' + wood)
-            .then((response) => response.json())
+        fetch(BackendUrl + '/updatePrices?id=' + id + '&gold=' + gold + '&wood=' + wood)
+            .then((response) => response.text())
             .then((data) => {
-                console.log(data);
+                if (data != '"Prices updated"') {
+                    console.log(data);
+                    return;
+                }
             });
         navigator.navigate('DealerPrices');
     }

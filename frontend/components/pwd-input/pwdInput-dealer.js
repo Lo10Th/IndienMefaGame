@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
 import { NavigationContainer } from '@react-navigation/native';
 import TabNavigator from '../../navigation/TabNavigator';
+import backendUrl from '../../env';
 
 import {
   CodeField,
@@ -101,8 +102,8 @@ const PwdCheckDealerInput = () => {
       setLoading(true);
       let id = await AsyncStorage.getItem('db_id');
       console.log(id);
-      console.log('http://192.168.178.91:5000/checkForPwd/dealers?id=' + id + '&password=' + value)
-      fetch('http://192.168.178.91:5000/checkForPwd/dealers?id=' + id + '&password=' + value)
+      console.log(backendUrl + '/checkForPwd/dealers?id=' + id + '&password=' + value)
+      fetch(backendUrl + '/checkForPwd/dealers?id=' + id + '&password=' + value)
         .then(response => response.json())
         .then(data => {
           console.log(data);

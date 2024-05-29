@@ -3,6 +3,7 @@ import { DataTable } from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import BackendUrl from '../env';
 
 export default function PricesHome() {
     const [prices, setPrices] = useState([]);
@@ -11,7 +12,7 @@ export default function PricesHome() {
 
     const getPrices = async () => {
         id = await AsyncStorage.getItem('db_id');
-        fetch('http://192.168.178.91:5000/getDealerPrices?id=' + id)
+        fetch(BackendUrl + '/getDealerPrices?id=' + id)
             .then((response) => response.json())
             .then((data) => {
                 setPrices(data);
@@ -20,7 +21,7 @@ export default function PricesHome() {
 
     const getSelfPrices = async () => {
         id = await AsyncStorage.getItem('db_id');
-        fetch('http://192.168.178.91:5000/getOwnPrices?id=' + id)
+        fetch(BackendUrl + '/getOwnPrices?id=' + id)
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);

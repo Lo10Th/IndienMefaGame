@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator }
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
+import backendUrl from '../env';
 
 export default function FirstTimeUsingDealer() {
   const [dealerNames, setDealerNames] = useState([]);
@@ -13,7 +14,7 @@ export default function FirstTimeUsingDealer() {
     async function fetchData() {
       setIsLoading(true);
       try {
-        const response = await fetch('http://192.168.178.91:5000/listDealers');
+        const response = await fetch(backendUrl + '/listDealers');
         const data = await response.json();
         setDealerNames(data);
       } catch (error) {

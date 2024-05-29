@@ -2,6 +2,7 @@ import { View, Text } from 'react-native';
 import { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
+import BackendUrl from '../env';
 
 
 export default function MatScreen({ route}) {
@@ -13,7 +14,7 @@ export default function MatScreen({ route}) {
     async function getData() {
         const id = await AsyncStorage.getItem('db_id');
         const type = await AsyncStorage.getItem('type');
-        fetch('http://192.168.178.91:5000/getPortfolio?id=' + id + '&type=' + type + '&resource=' + matName)
+        fetch(BackendUrl + '/getPortfolio?id=' + id + '&type=' + type + '&resource=' + matName)
             .then((response) => Number(response))
             .then((data) => setMatCount(data));
     }

@@ -2,6 +2,7 @@ import { Animated, Text, View, TouchableOpacity, ActivityIndicator } from 'react
 import React, {useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
+import backendUrl from '../../env';
 
 import {
   CodeField,
@@ -100,8 +101,8 @@ const PwdCheckGroupInput = () => {
       setLoading(true);
       let id = await AsyncStorage.getItem('db_id');
       console.log(id);
-      console.log('http://192.168.178.91:5000/checkForPwd/groups?id=' + id + '&password=' + value)
-      fetch('http://192.168.178.91:5000/checkForPwd/groups?id=' + id + '&password=' + value)
+      console.log(backendUrl + '/checkForPwd/groups?id=' + id + '&password=' + value)
+      fetch(backendUrl + '/checkForPwd/groups?id=' + id + '&password=' + value)
         .then(response => response.json())
         .then(data => {
           console.log(data);

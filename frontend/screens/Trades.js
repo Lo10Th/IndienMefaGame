@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { DataTable } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import BackendUrl from '../env';
 
 
 export default function Trades() {
@@ -89,12 +90,12 @@ export default function Trades() {
     getTrades = async () => {
         const id = await AsyncStorage.getItem('db_id');
         
-        fetch('http://192.168.178.91:5000/listDealersClosedTrades?id=' + id)
+        fetch(BackendUrl + '/listDealersClosedTrades?id=' + id)
             .then((response) => response.json())
             .then((data) => {
                 setClosedTrades(data);
             });
-        fetch('http://192.168.178.91:5000/listDealerOpenTrades?id=' + id)
+        fetch(BackendUrl + '/listDealerOpenTrades?id=' + id)
             .then((response) => response.json())
             .then((data) => {
                 setOpenTrades(data);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import backendUrl from '../../env';
 
 
 export default function MaterialsList() {
@@ -11,7 +12,7 @@ export default function MaterialsList() {
     const getMaterials = async () => {
         const id = await AsyncStorage.getItem('db_id');
         const type = await AsyncStorage.getItem('type');
-        const url = 'http://192.168.178.91:5000/getPortfolioAll?id=' + id + '&type=' + type 
+        const url = backendUrl + '/getPortfolioAll?id=' + id + '&type=' + type 
         fetch(url)
         .then((response) => response.json())
         .then(data => {
