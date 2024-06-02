@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import DealerTradesStackScreen from './DealerTradesStack';
 import DealerPrizesStackScreen from './dealerPrizesStack';
+import QrScannerStack from './qrScannerStack';
 
 
 const Tab = createBottomTabNavigator();
@@ -46,6 +47,21 @@ export default function TabNavigator() {
         ),
       }}
     />
+
+  {type === 'group' && (
+    <Tab.Screen
+      name="Scan"
+      component={QrScannerStack}
+      options={{
+        tabBarIcon: ({ focused }) => (
+          <Image
+            source={focused ? require('../assets/icons/qrCodeFocus.png') : require('../assets/icons/qrCodeUnfocus.png')}
+            style={{ width: 30, height: 30, tintColor: focused ? '#F7F7F7' : '#A9A9A9' }}
+          />
+        ),
+      }}
+    />
+  )}
 
     {type === 'dealer' && (
       <Tab.Screen 

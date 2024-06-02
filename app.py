@@ -260,12 +260,24 @@ def updatePortfolio():
     
     return "Portfolio updated"
 
+@app.route('/getTradeInfo', methods=['GET','POST'])
+def getTradeInfo():
+    # Get the trade information of a trade
+    # We take the id of the trade as an argument
+    # Do it like this in the request: http://localhost:5000/getTradeInfo?id=1
+
+    id = request.args.get('id')
+
+    get = client.collection("openTrades").get_one(id)
+
+    return jsonify({ "materialSum": get.materialsum, "blingSum": get.blingsum, "transactionType": get.transactiontype, "material": get.material})
 
 @app.route('/closeTrade', methods=['GET','POST'])
 def closeTrade():
     # Closes a trade that has been created by the dealer
     # We take the openTrade id and the id of the group that wants to close the trade
     # Do it like this in the request: http://localhost:5000/closeTrade?id=1&groupId=1
+    print('in qu')
 
     closeTradeId = request.args.get('id')
     groupId = request.args.get('groupId')
@@ -358,7 +370,9 @@ def closeTrade():
         "transactiontype": closeTradeTransactionType,
         "material": closeTradeMaterial,
         "typeofclosing": "completed"
-    })  
+    })
+
+    print('que fast fertig')
   
 
     return "Trade closed"

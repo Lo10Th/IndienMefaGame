@@ -21,7 +21,7 @@ export default function FirstTimeUsing1() {
   
     return (
       <View style={styles.container}>
-          <Text style={styles.HeaderText}>Willkommen in Indien</Text>
+          <Text style={styles.HeaderText}>Willkommen bei Indien</Text>
           <View style={styles.boxesContainer}>
           <TouchableOpacity style={selectedBox === 'Gruppe' ? styles.selectedBoxContainer : styles.boxContainer} onPress={() => handleBoxClick('Gruppe')}>
               <Text style={selectedBox === 'Gruppe' ? styles.selectedBoxText : styles.boxText } >Gruppe</Text>
