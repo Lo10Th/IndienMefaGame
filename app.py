@@ -39,10 +39,10 @@ def getDealerPrices():
         if dealer.id != id:
             prices_id = dealer.prices
             prices = client.collection("prices").get_one(prices_id)
-            if hasattr(prices, 'gold') and hasattr(prices, 'wood'):
-                dealer_data[dealer.name] = {"gold": prices.gold, "wood": prices.wood}
+            if hasattr(prices, 'gold') and hasattr(prices, 'wood') and hasattr(prices, 'wool') and hasattr(prices, 'diamond') and hasattr(prices, 'cole'):
+                dealer_data[dealer.name] = {"gold": prices.gold, "wood": prices.wood, "wool": prices.wool, "diamond": prices.diamond, "cole": prices.cole}
             else:
-                print(f"Prices record {prices_id} does not have 'gold' or 'wood' attributes")
+                print(f"Prices record {prices_id} does not have all the required attributes")
 
     return jsonify(dealer_data)
 
@@ -58,21 +58,24 @@ def getOwnPrices():
     prices_id = dealer.prices
     prices = client.collection("prices").get_one(prices_id)
 
-    return jsonify({"gold": prices.gold, "wood": prices.wood})
+    return jsonify({"gold": prices.gold, "wood": prices.wood, "wool": prices.wool, "cole": prices.cole, "diamond": prices.diamond})
 
 @app.route('/updatePrices', methods=['GET','POST'])
 def updatePrices():
     # Update the prices of the materials for the dealer with the id that we pass
     # We take the dealer id as an argument and the new prices for the materials
-    # Do it like this in the request: http://localhost:5000/updatePrices?id=1&gold=100&wood=100
+    # Do it like this in the request: http://localhost:5000/updatePrices?id=1&gold=100&wood=100&wool=50&cole=75&diamond=200
 
     id = request.args.get('id')
     gold = request.args.get('gold')
     wood = request.args.get('wood')
+    wool = request.args.get('wool')
+    cole = request.args.get('cole')
+    diamond = request.args.get('diamond')
 
     dealer = client.collection("dealers").get_one(id)
     prices_id = dealer.prices
-    client.collection("prices").update(prices_id, {"gold": gold, "wood": wood})
+    client.collection("prices").update(prices_id, {"gold": gold, "wood": wood, "wool": wool, "cole": cole, "diamond": diamond})
 
     return "Prices updated"
 
@@ -167,7 +170,7 @@ def getPortfolio():
     # Get the portfolio of a group or a dealer
     # We take the id of the group or dealer as an argument
     # And the type of the portfolio, if its a group or a dealer
-    # And the resource that we want to get(gold, wood, bling)
+    # And the resource that we want to get(gold, wood, bling, wool, cole, diamond)
     # Do it like this in the request: http://localhost:5000/getPortfolio?id=1&type=group&resource=gold
 
     id = request.args.get('id')
@@ -185,6 +188,15 @@ def getPortfolio():
         if resource == "bling":
             getbling = client.collection("portfolio").get_one(getportfolio).bling
             return str(getbling)
+        if resource == "wool":
+            getwool = client.collection("portfolio").get_one(getportfolio).wool
+            return str(getwool)
+        if resource == "cole":
+            getcole = client.collection("portfolio").get_one(getportfolio).cole
+            return str(getcole)
+        if resource == "diamond":
+            getdiamond = client.collection("portfolio").get_one(getportfolio).diamond
+            return str(getdiamond)
     if type == "group":
         getportfolio = client.collection("groups").get_one(id).portfolio
         if resource == "gold":
@@ -196,6 +208,15 @@ def getPortfolio():
         if resource == "bling":
             getbling = client.collection("portfolio").get_one(getportfolio).bling
             return str(getbling)
+        if resource == "wool":
+            getwool = client.collection("portfolio").get_one(getportfolio).wool
+            return str(getwool)
+        if resource == "cole":
+            getcole = client.collection("portfolio").get_one(getportfolio).cole
+            return str(getcole)
+        if resource == "diamond":
+            getdiamond = client.collection("portfolio").get_one(getportfolio).diamond
+            return str(getdiamond)
     
     return "Error"
 
