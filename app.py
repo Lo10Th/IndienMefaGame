@@ -24,6 +24,62 @@ def init():
     #TODO: Add init html page to create groups and dealers and the money of those with there passwords
     return render_template('init.html')
 
+@app.route('/getDealerPrices', methods=['GET','POST'])
+def getDealerPrices():
+    # Get the dealer prices of the materials for each dealer
+    # We take the dealer id as an argument and will create a json with the prices of the materials for every dealer exept the one with the id that we passed
+    # Do it like this in the request: http://localhost:5000/getDealerPrices?id=1
+
+    id = request.args.get('id')
+
+    dealers = client.collection("dealers").get_full_list()
+    dealer_data = {}
+
+    for dealer in dealers:
+        if dealer.id != id:
+            prices_id = dealer.prices
+            prices = client.collection("prices").get_one(prices_id)
+            if hasattr(prices, 'gold') and hasattr(prices, 'wood') and hasattr(prices, 'wool') and hasattr(prices, 'diamond') and hasattr(prices, 'cole'):
+                dealer_data[dealer.name] = {"gold": prices.gold, "wood": prices.wood, "wool": prices.wool, "diamond": prices.diamond, "cole": prices.cole}
+            else:
+                print(f"Prices record {prices_id} does not have all the required attributes")
+
+    return jsonify(dealer_data)
+
+@app.route('/getOwnPrices', methods=['GET','POST'])
+def getOwnPrices():
+    # Get the dealer prices of the materials for the dealer with the id that we pass
+    # We take the dealer id as an argument and will create a json with the prices of the materials for the dealer with the id that we passed
+    # Do it like this in the request: http://localhost:5000/getOwnPrices?id=1
+
+    id = request.args.get('id')
+
+    dealer = client.collection("dealers").get_one(id)
+    prices_id = dealer.prices
+    prices = client.collection("prices").get_one(prices_id)
+
+    return jsonify({"gold": prices.gold, "wood": prices.wood, "wool": prices.wool, "cole": prices.cole, "diamond": prices.diamond})
+
+@app.route('/updatePrices', methods=['GET','POST'])
+def updatePrices():
+    # Update the prices of the materials for the dealer with the id that we pass
+    # We take the dealer id as an argument and the new prices for the materials
+    # Do it like this in the request: http://localhost:5000/updatePrices?id=1&gold=100&wood=100&wool=50&cole=75&diamond=200
+
+    id = request.args.get('id')
+    gold = request.args.get('gold')
+    wood = request.args.get('wood')
+    wool = request.args.get('wool')
+    cole = request.args.get('cole')
+    diamond = request.args.get('diamond')
+
+    dealer = client.collection("dealers").get_one(id)
+    prices_id = dealer.prices
+    client.collection("prices").update(prices_id, {"gold": gold, "wood": wood, "wool": wool, "cole": cole, "diamond": diamond})
+
+    return "Prices updated"
+
+
 @app.route('/listGroups', methods=['GET','POST'])
 def listGroups():
     # Get all Groups in one list with their names and ids
@@ -77,21 +133,44 @@ def openTrade():
 
     client.collection("openTrades").create({
         "dealer": dealer_id,
-        "materialSum": materialSum,
-        "blingSum": blingSum,
-        "transactionType": transactionType,
+        "materialsum": materialSum,
+        "blingsum": blingSum,
+        "transactiontype": transactionType,
         "material": material
     })
 
     return "Trade opened"
 
+@app.route('/listDealersClosedTrades', methods=['GET','POST'])
+def listDealersTrades():
+    # Get all the trades that the dealer has opened
+    # We take the dealer id as an argument
+    # Do it like this in the request: http://localhost:5000/listDealersClosedTrades?id=1
+
+    dealer_id = request.args.get('id')
+    trades = client.collection("closedTrades").get_full_list()
+    trades_data = [{"id": record.id, "created": record.created, "dealer": record.dealer, "materialSum": record.materialsum, "blingSum": record.blingsum, "transactionType": record.transactiontype, "material": record.material} for record in trades if record.dealer == dealer_id ]
+
+    return jsonify(trades_data)
+
+@app.route('/listDealerOpenTrades', methods=['GET','POST'])
+def listDealerOpenTrades():
+    # Get all the trades that the dealer has opened
+    # We take the dealer id as an argument
+    # Do it like this in the request: http://localhost:5000/listDealerOpenTrades?id=1
+
+    dealer_id = request.args.get('id')
+    trades = client.collection("openTrades").get_full_list()
+    trades_data = [{"id": record.id, "created": record.created, "dealer": record.dealer, "materialSum": record.materialsum, "blingSum": record.blingsum, "transactionType": record.transactiontype, "material": record.material} for record in trades if record.dealer == dealer_id ]
+
+    return jsonify(trades_data)
 
 @app.route('/getPortfolio', methods=['GET','POST'])
 def getPortfolio():
     # Get the portfolio of a group or a dealer
     # We take the id of the group or dealer as an argument
     # And the type of the portfolio, if its a group or a dealer
-    # And the resource that we want to get(gold, wood, bling)
+    # And the resource that we want to get(gold, wood, bling, wool, cole, diamond)
     # Do it like this in the request: http://localhost:5000/getPortfolio?id=1&type=group&resource=gold
 
     id = request.args.get('id')
@@ -109,6 +188,15 @@ def getPortfolio():
         if resource == "bling":
             getbling = client.collection("portfolio").get_one(getportfolio).bling
             return str(getbling)
+        if resource == "wool":
+            getwool = client.collection("portfolio").get_one(getportfolio).wool
+            return str(getwool)
+        if resource == "cole":
+            getcole = client.collection("portfolio").get_one(getportfolio).cole
+            return str(getcole)
+        if resource == "diamond":
+            getdiamond = client.collection("portfolio").get_one(getportfolio).diamond
+            return str(getdiamond)
     if type == "group":
         getportfolio = client.collection("groups").get_one(id).portfolio
         if resource == "gold":
@@ -120,9 +208,46 @@ def getPortfolio():
         if resource == "bling":
             getbling = client.collection("portfolio").get_one(getportfolio).bling
             return str(getbling)
+        if resource == "wool":
+            getwool = client.collection("portfolio").get_one(getportfolio).wool
+            return str(getwool)
+        if resource == "cole":
+            getcole = client.collection("portfolio").get_one(getportfolio).cole
+            return str(getcole)
+        if resource == "diamond":
+            getdiamond = client.collection("portfolio").get_one(getportfolio).diamond
+            return str(getdiamond)
     
     return "Error"
 
+@app.route('/getPortfolioAll', methods=['GET','POST'])
+def getPortfolioAll():
+    # Get the portfolio of a group or a dealer
+    # We take the id of the group or dealer as an argument
+    # And the type of the portfolio, if its a group or a dealer
+    # Do it like this in the request: http://localhost:5000/getPortfolioAll?id=1&type=group
+
+    id = request.args.get('id')
+    type = request.args.get('type')
+
+    if type == "dealer":
+        getportfolio = client.collection("dealers").get_one(id).portfolio
+        getgold = client.collection("portfolio").get_one(getportfolio).gold
+        getwood = client.collection("portfolio").get_one(getportfolio).wood
+        getbling = client.collection("portfolio").get_one(getportfolio).bling
+        return jsonify({"gold": getgold, "wood": getwood, "bling": getbling})
+    if type == "group":
+        getportfolio = client.collection("groups").get_one(id).portfolio
+        getgold = client.collection("portfolio").get_one(getportfolio).gold
+        getwood = client.collection("portfolio").get_one(getportfolio).wood
+        getbling = client.collection("portfolio").get_one(getportfolio).bling
+        return jsonify({"gold": getgold, "wood": getwood, "bling": getbling})
+    
+    return "Error"
+
+
+
+    
 @app.route('/updatePortfolio', methods=['GET','POST'])
 def updatePortfolio():
     # Update the portfolio of a group or a dealer
@@ -156,12 +281,24 @@ def updatePortfolio():
     
     return "Portfolio updated"
 
+@app.route('/getTradeInfo', methods=['GET','POST'])
+def getTradeInfo():
+    # Get the trade information of a trade
+    # We take the id of the trade as an argument
+    # Do it like this in the request: http://localhost:5000/getTradeInfo?id=1
+
+    id = request.args.get('id')
+
+    get = client.collection("openTrades").get_one(id)
+
+    return jsonify({ "materialSum": get.materialsum, "blingSum": get.blingsum, "transactionType": get.transactiontype, "material": get.material})
 
 @app.route('/closeTrade', methods=['GET','POST'])
 def closeTrade():
     # Closes a trade that has been created by the dealer
     # We take the openTrade id and the id of the group that wants to close the trade
     # Do it like this in the request: http://localhost:5000/closeTrade?id=1&groupId=1
+    print('in qu')
 
     closeTradeId = request.args.get('id')
     groupId = request.args.get('groupId')
@@ -254,7 +391,9 @@ def closeTrade():
         "transactiontype": closeTradeTransactionType,
         "material": closeTradeMaterial,
         "typeofclosing": "completed"
-    })  
+    })
+
+    print('que fast fertig')
   
 
     return "Trade closed"

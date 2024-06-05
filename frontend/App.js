@@ -2,30 +2,33 @@ import { NavigationContainer } from '@react-navigation/native';
 import TabNavigator from './navigation/TabNavigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FirstTimeUsingStackScreen from './navigation/firstTimeUsingStack';
+import { View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 
 export default function App() {
+  const [isVerified, setIsVerified] = useState(null);
 
-  const askForUsingeBefore = async () => {
-    ask = await AsyncStorage.getItem('verified');
-    console.log(ask);
-    if (ask == null) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  useEffect(() => {
+    const checkVerified = async () => {
+      console.log('Checking if user is verified...');
+      const value = await AsyncStorage.getItem('verified');
+      setIsVerified(value);
+    };
 
-  if (askForUsingeBefore() === false) {
-    return (
-      <NavigationContainer>
-        <FirstTimeUsingStackScreen />
-      </NavigationContainer>
-    );}
-  else {
-    return (
-      <NavigationContainer>
-        <TabNavigator />
-      </NavigationContainer>
-    );
-  }
+    checkVerified();
+  }, []);
+
+  return (
+    <View style={{ flex: 1 }}>
+      {isVerified === null ? (
+        <NavigationContainer>
+          <FirstTimeUsingStackScreen />
+        </NavigationContainer>
+      ) : (
+        <NavigationContainer>
+          <TabNavigator />
+        </NavigationContainer>
+      )}
+    </View>
+  );
 }
